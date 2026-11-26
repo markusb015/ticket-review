@@ -1,0 +1,39 @@
+html { color-scheme: dark; }
+body { overflow: hidden; background: #0a0a0a; color: #d4d4d4; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+#uploadPanel::backdrop { background: rgba(0, 0, 0, .78); }
+.bg-mist { background-color: #0a0a0a !important; }
+.bg-white { background-color: #171717 !important; }
+.bg-slate-50, .bg-slate-50\/70 { background-color: #262626 !important; }
+.bg-blue-50 { background-color: #262626 !important; }
+.border-slate-200, .border-slate-300 { border-color: #404040 !important; }
+.text-slate-700 { color: #e5e5e5 !important; }
+.text-slate-600, .text-slate-500 { color: #a3a3a3 !important; }
+.text-slate-400 { color: #737373 !important; }
+input, select { background-color: #171717 !important; color: #e5e5e5 !important; }
+#dropZone.is-dragging { border-color: #60a5fa; background: #262626; transform: scale(1.005); }
+.table-wrap { overflow: auto; }
+thead th { position: sticky; top: 0; z-index: 1; background: #262626; color: #f5f5f5; white-space: nowrap; }
+th, td { border-bottom: 1px solid #404040; padding: .7rem .8rem; vertical-align: top; }
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:hover td { background-color: #2d2d2d; }
+td { max-width: 25rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+td.subject-cell { white-space: normal; min-width: 20rem; }
+.copyable-cell { position: relative; padding-right: 2.5rem; }
+.copy-button { position: absolute; right: .55rem; top: .55rem; display: grid; height: 1.5rem; width: 1.5rem; place-items: center; border: 1px solid #525252; border-radius: .375rem; background: #171717; color: #d4d4d4; opacity: 0; transition: opacity .12s ease, background .12s ease; }
+.copyable-cell:hover .copy-button, .copy-button:focus-visible { opacity: 1; }
+.copy-button:hover { background: #404040; color: #fff; }
+.warning-cell { background-color: #4b2028 !important; color: #fecaca; }
+.active-tab { border-color: #3b82f6 !important; color: #93c5fd !important; }
+#sheetTabs button { color: #bdbdbd !important; }
+#sheetTabs button:hover { color: #f5f5f5 !important; }
+#sheetTabs span { background: #404040 !important; color: #f5f5f5 !important; }
+.sort-button { display: inline-flex; align-items: center; gap: .35rem; font: inherit; color: inherit; }
+.sort-button:hover { color: #fff; }
+#sheetTabs button span { background: #404040 !important; color: #e5e5e5 !important; }
+#sheetTabs button.active-tab span { background: #1d4ed8 !important; color: #eff6ff !important; }
+.frozen-update-needed, .frozen-no-update, .frozen-updated-by, .frozen-update-type { box-sizing: border-box; position: sticky; z-index: 2; background: #171717; }
+th.frozen-update-needed, th.frozen-no-update, th.frozen-updated-by, th.frozen-update-type { z-index: 4; background: #262626; }
+.frozen-update-type { right: 0; width: 170px; min-width: 170px; max-width: 170px; }
+.frozen-updated-by { right: 170px; width: 146px; min-width: 146px; max-width: 146px; }
+.frozen-update-needed { right: 316px; width: 180px; min-width: 180px; max-width: 180px; }
+.frozen-no-update { right: 496px; width: 112px; min-width: 112px; max-width: 112px; text-align: center; }
