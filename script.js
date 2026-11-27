@@ -106,10 +106,10 @@ function buildAudit(tickets) {
   [...new Set(CONFIG.alertKeywords.map(([, name]) => name))].forEach((name) => {
     state.sheets[name] = { columns: CONFIG.columns.alert, rows: makeRows(withMeta.filter((ticket) => classification(ticket) === name), CONFIG.columns.alert, 'Created Time', true) };
   });
-  state.sheets['Non Alerts'] = { columns: CONFIG.columns.master, rows: makeRows(withMeta.filter((ticket) => !isAlert(ticket)), CONFIG.columns.master, 'Last Updated Time', false) };
-  state.sheets['Work in Progress'] = { columns: CONFIG.columns.status, rows: makeRows(withMeta.filter((ticket) => !isAlert(ticket) && normalise(ticket.Status) === 'work in progress'), CONFIG.columns.status, 'Due By Time', false) };
   state.sheets.Pending = { columns: CONFIG.columns.status, rows: makeRows(withMeta.filter((ticket) => !isAlert(ticket) && CONFIG.pendingStatuses.has(normalise(ticket.Status))), CONFIG.columns.status, 'Due By Time', false) };
   state.sheets['Waiting Approval'] = { columns: CONFIG.columns.status, rows: makeRows(withMeta.filter((ticket) => !isAlert(ticket) && normalise(ticket.Status) === 'waiting approval'), CONFIG.columns.status, 'Due By Time', false) };
+  state.sheets['Non Alerts'] = { columns: CONFIG.columns.master, rows: makeRows(withMeta.filter((ticket) => !isAlert(ticket)), CONFIG.columns.master, 'Last Updated Time', false) };
+  state.sheets['Work in Progress'] = { columns: CONFIG.columns.status, rows: makeRows(withMeta.filter((ticket) => !isAlert(ticket) && normalise(ticket.Status) === 'work in progress'), CONFIG.columns.status, 'Due By Time', false) };
   state.visibleColumns = Object.fromEntries(Object.entries(state.sheets).map(([name, table]) => [name, new Set(table.columns)]));
   state.activeSheet = 'All Tickets';
   state.sort = { column: null, direction: 'asc' };
