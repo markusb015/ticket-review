@@ -21,10 +21,10 @@ const CONFIG = {
     'andrea.beleno@inchcape.com', 'andres.toro@inchcape.com', 'cesar.lancheros@inchcape.com', 'damian.gil@inchcape.com', 'daniela.pelaez@inchcape.com', 'felix.uriza@inchcape.com', 'javierl.suarez@inchcape.com', 'jhonatan.baron@inchcape.com', 'juan.sierrap@inchcape.com', 'juana.plaza@inchcape.com', 'julian.prias@inchcape.com', 'katerin.amariles@inchcape.com', 'kevin.alvarez@inchcape.com', 'kevin.rincons@inchcape.com', 'lina.andrade@inchcape.com', 'maria.tobon@inchcape.com', 'paula.bustos@inchcape.com',
   ]),
   columns: {
-    classified: ['#', 'RequestID', 'Technician', 'Status', 'Region', 'No Update', 'Update needed', 'OnSheet', 'Subject', 'Priority', 'Last Updated Time', 'Last Updated By Email', 'UnReplied Count', 'Created Time', 'Due By Time'],
-    status: ['#', 'RequestID', 'Technician', 'Status', 'Region', 'No Update', 'Update needed', 'OnSheet', 'Subject', 'Priority', 'Last Updated Time', 'Last Updated By Email', 'UnReplied Count', 'Created Time', 'Due By Time'],
-    alert: ['#', 'RequestID', 'Technician', 'Status', 'Region', 'No Update', 'Update needed', 'OnSheet', 'Subject', 'Priority', 'Last Updated Time', 'Last Updated By Email', 'UnReplied Count', 'Created Time', 'Due By Time'],
-    master: ['#', 'RequestID', 'Technician', 'Status', 'Region', 'No Update', 'Update needed', 'OnSheet', 'Subject', 'Priority', 'Last Updated Time', 'Last Updated By Email', 'UnReplied Count', 'Created Time', 'Due By Time'],
+    classified: ['#', 'RequestID', 'Technician', 'Status', 'Region', 'Created Time', 'Due By Time', 'UnReplied Count', 'Priority', 'Subject'],
+    status: ['#', 'RequestID', 'Technician', 'Status', 'Region', 'Created Time', 'Due By Time', 'Priority', 'Subject', 'No Update', 'Update needed', 'Updated By', 'Update Type'],
+    alert: ['#', 'RequestID', 'Technician', 'Status', 'Region', 'Created Time', 'Due By Time', 'Subject', 'No Update', 'Update needed', 'Updated By', 'Update Type'],
+    master: ['#', 'RequestID', 'Technician', 'Status', 'Region', 'Created Time', 'Due By Time', 'UnReplied Count', 'Priority', 'Subject', 'Last Updated Time', 'Last Updated By Email', 'OnSheet', 'No Update', 'Update needed', 'Updated By', 'Update Type'],
   },
 };
 
@@ -106,10 +106,10 @@ function buildAudit(tickets) {
   [...new Set(CONFIG.alertKeywords.map(([, name]) => name))].forEach((name) => {
     state.sheets[name] = { columns: CONFIG.columns.alert, rows: makeRows(withMeta.filter((ticket) => classification(ticket) === name), CONFIG.columns.alert, 'Created Time', true) };
   });
-  state.sheets.Pending = { columns: CONFIG.columns.status, rows: makeRows(withMeta.filter((ticket) => !isAlert(ticket) && CONFIG.pendingStatuses.has(normalise(ticket.Status))), CONFIG.columns.status, 'Due By Time', false) };
-  state.sheets['Waiting Approval'] = { columns: CONFIG.columns.status, rows: makeRows(withMeta.filter((ticket) => !isAlert(ticket) && normalise(ticket.Status) === 'waiting approval'), CONFIG.columns.status, 'Due By Time', false) };
   state.sheets['Non Alerts'] = { columns: CONFIG.columns.master, rows: makeRows(withMeta.filter((ticket) => !isAlert(ticket)), CONFIG.columns.master, 'Last Updated Time', false) };
   state.sheets['Work in Progress'] = { columns: CONFIG.columns.status, rows: makeRows(withMeta.filter((ticket) => !isAlert(ticket) && normalise(ticket.Status) === 'work in progress'), CONFIG.columns.status, 'Due By Time', false) };
+  state.sheets.Pending = { columns: CONFIG.columns.status, rows: makeRows(withMeta.filter((ticket) => !isAlert(ticket) && CONFIG.pendingStatuses.has(normalise(ticket.Status))), CONFIG.columns.status, 'Due By Time', false) };
+  state.sheets['Waiting Approval'] = { columns: CONFIG.columns.status, rows: makeRows(withMeta.filter((ticket) => !isAlert(ticket) && normalise(ticket.Status) === 'waiting approval'), CONFIG.columns.status, 'Due By Time', false) };
   state.visibleColumns = Object.fromEntries(Object.entries(state.sheets).map(([name, table]) => [name, new Set(table.columns)]));
   state.activeSheet = 'All Tickets';
   state.sort = { column: null, direction: 'asc' };
@@ -243,12 +243,16 @@ function toggleColumnMenu() {
 
 function exportWorkbook() {
   const workbook = XLSX.utils.book_new();
-  Object.entries(state.sheets).forEach(([name, table]) => {
-    const rows = table.rows.map((row) => Object.fromEntries(table.columns.map((column) => [column, column === 'Update needed' ? (state.updateNeeded.get(text(row.RequestID)) || '') : column === 'No Update' ? (state.noUpdate.has(text(row.RequestID)) ? 'Yes' : 'No') : column === 'Updated By' || column === 'Update Type' ? getValue(row, column) : row[column]])));
-    const sheet = XLSX.utils.json_to_sheet(rows, { header: table.columns });
-    sheet['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: rows.length, c: table.columns.length - 1 } }) }; sheet['!freeze'] = { xSplit: 0, ySplit: 1 };
-    sheet['!cols'] = table.columns.map((column) => ({ wch: Math.min(Math.max(column.length + 2, ...rows.map((row) => displayValue(row[column]).length + 2)), 45) }));
-    applyWorkbookFormatting(sheet, table, rows);
+  const outputColumns = ['#', 'RequestID', 'Technician', 'Status', 'Region', 'No Update', 'Update needed', 'OnSheet', 'Subject', 'Priority', 'Last Updated Time', 'Last Updated By Email', 'UnReplied Count', 'Created Time', 'Due By Time'];
+  const outputSheetOrder = ['All Tickets', 'OPM', 'Site24x7', 'Azure', 'Pending', 'Waiting Approval', 'Non Alerts', 'Work in Progress'];
+  outputSheetOrder.filter((name) => state.sheets[name]).forEach((name) => {
+    const table = state.sheets[name];
+    const rows = table.rows.map((row) => Object.fromEntries(outputColumns.map((column) => [column, column === 'Update needed' ? (state.updateNeeded.get(text(row.RequestID)) || '') : column === 'No Update' ? (state.noUpdate.has(text(row.RequestID)) ? 'Yes' : 'No') : row[column]])));
+    const exportTable = { ...table, columns: outputColumns };
+    const sheet = XLSX.utils.json_to_sheet(rows, { header: outputColumns });
+    sheet['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: rows.length, c: outputColumns.length - 1 } }) }; sheet['!freeze'] = { xSplit: 0, ySplit: 1 };
+    sheet['!cols'] = outputColumns.map((column) => ({ wch: Math.min(Math.max(column.length + 2, ...rows.map((row) => displayValue(row[column]).length + 2)), 45) }));
+    applyWorkbookFormatting(sheet, exportTable, rows);
     XLSX.utils.book_append_sheet(workbook, sheet, name);
   });
   XLSX.writeFile(workbook, 'Ticket_Audit.xlsx');
