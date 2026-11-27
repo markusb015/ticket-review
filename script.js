@@ -21,10 +21,10 @@ const CONFIG = {
     'andrea.beleno@inchcape.com', 'andres.toro@inchcape.com', 'cesar.lancheros@inchcape.com', 'damian.gil@inchcape.com', 'daniela.pelaez@inchcape.com', 'felix.uriza@inchcape.com', 'javierl.suarez@inchcape.com', 'jhonatan.baron@inchcape.com', 'juan.sierrap@inchcape.com', 'juana.plaza@inchcape.com', 'julian.prias@inchcape.com', 'katerin.amariles@inchcape.com', 'kevin.alvarez@inchcape.com', 'kevin.rincons@inchcape.com', 'lina.andrade@inchcape.com', 'maria.tobon@inchcape.com', 'paula.bustos@inchcape.com',
   ]),
   columns: {
-    classified: ['#', 'RequestID', 'Technician', 'Status', 'Region', 'Created Time', 'Due By Time', 'UnReplied Count', 'Priority', 'Subject'],
-    status: ['#', 'RequestID', 'Technician', 'Status', 'Region', 'Created Time', 'Due By Time', 'Priority', 'Subject', 'No Update', 'Update needed', 'Updated By', 'Update Type'],
-    alert: ['#', 'RequestID', 'Technician', 'Status', 'Region', 'Created Time', 'Due By Time', 'Subject', 'No Update', 'Update needed', 'Updated By', 'Update Type'],
-    master: ['#', 'RequestID', 'Technician', 'Status', 'Region', 'Created Time', 'Due By Time', 'UnReplied Count', 'Priority', 'Subject', 'Last Updated Time', 'Last Updated By Email', 'OnSheet', 'No Update', 'Update needed', 'Updated By', 'Update Type'],
+    classified: ['#', 'RequestID', 'Technician', 'Status', 'Region', 'No Update', 'Update needed', 'OnSheet', 'Subject', 'Priority', 'Last Updated Time', 'Last Updated By Email', 'UnReplied Count', 'Created Time', 'Due By Time'],
+    status: ['#', 'RequestID', 'Technician', 'Status', 'Region', 'No Update', 'Update needed', 'OnSheet', 'Subject', 'Priority', 'Last Updated Time', 'Last Updated By Email', 'UnReplied Count', 'Created Time', 'Due By Time'],
+    alert: ['#', 'RequestID', 'Technician', 'Status', 'Region', 'No Update', 'Update needed', 'OnSheet', 'Subject', 'Priority', 'Last Updated Time', 'Last Updated By Email', 'UnReplied Count', 'Created Time', 'Due By Time'],
+    master: ['#', 'RequestID', 'Technician', 'Status', 'Region', 'No Update', 'Update needed', 'OnSheet', 'Subject', 'Priority', 'Last Updated Time', 'Last Updated By Email', 'UnReplied Count', 'Created Time', 'Due By Time'],
   },
 };
 
